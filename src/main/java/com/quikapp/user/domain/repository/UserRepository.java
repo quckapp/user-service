@@ -1,7 +1,7 @@
-package com.quikapp.user.domain.repository;
+package com.quckapp.user.domain.repository;
 
-import com.quikapp.user.domain.entity.User;
-import com.quikapp.user.domain.entity.User.UserStatus;
+import com.quckapp.user.domain.entity.User;
+import com.quckapp.user.domain.entity.User.UserStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

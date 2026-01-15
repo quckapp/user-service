@@ -1,4 +1,4 @@
-package com.quikapp.user;
+package com.quckapp.user;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
- * QuikApp User Service - Spring Boot Application
+ * QuckApp User Service - Spring Boot Application
  *
  * Features:
  * - User CRUD operations

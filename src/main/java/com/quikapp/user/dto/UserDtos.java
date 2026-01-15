@@ -1,6 +1,6 @@
-package com.quikapp.user.dto;
+package com.quckapp.user.dto;
 
-import com.quikapp.user.domain.entity.User.UserStatus;
+import com.quckapp.user.domain.entity.User.UserStatus;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import java.time.Instant;

@@ -1,8 +1,8 @@
-package com.quikapp.user.kafka;
+package com.quckapp.user.kafka;
 
-import com.quikapp.user.domain.entity.User;
-import com.quikapp.user.domain.entity.UserPreferences;
-import com.quikapp.user.domain.entity.UserProfile;
+import com.quckapp.user.domain.entity.User;
+import com.quckapp.user.domain.entity.UserPreferences;
+import com.quckapp.user.domain.entity.UserProfile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +22,7 @@ public class UserEventPublisher {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    @Value("${app.kafka.topics.user-events:quikapp.users.events}")
+    @Value("${app.kafka.topics.user-events:quckapp.users.events}")
     private String userEventsTopic;
 
     @Async

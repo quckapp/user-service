@@ -1,6 +1,6 @@
-package com.quikapp.user.exception;
+package com.quckapp.user.exception;
 
-import com.quikapp.user.dto.UserDtos.ApiResponse;
+import com.quckapp.user.dto.UserDtos.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

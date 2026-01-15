@@ -5,7 +5,7 @@ spring:
   application:
     name: user-service
   datasource:
-    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:quikapp_users}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:quckapp_users}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:password}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -33,7 +33,7 @@ spring:
 app:
   kafka:
     topics:
-      user-events: ${KAFKA_USER_EVENTS_TOPIC:quikapp.users.events}
+      user-events: ${KAFKA_USER_EVENTS_TOPIC:quckapp.users.events}
 
 management:
   endpoints:
@@ -47,7 +47,7 @@ management:
 logging:
   level:
     root: INFO
-    com.quikapp.user: ${LOG_LEVEL:DEBUG}
+    com.quckapp.user: ${LOG_LEVEL:DEBUG}
 
 springdoc:
   api-docs:

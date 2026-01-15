@@ -11,11 +11,11 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.quikapp</groupId>
+    <groupId>com.quckapp</groupId>
     <artifactId>user-service</artifactId>
     <version>1.0.0</version>
-    <name>QuikApp User Service</name>
-    <description>User management microservice for QuikApp</description>
+    <name>QuckApp User Service</name>
+    <description>User management microservice for QuckApp</description>
 
     <properties>
         <java.version>21</java.version>

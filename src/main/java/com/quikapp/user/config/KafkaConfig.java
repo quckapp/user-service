@@ -1,4 +1,4 @@
-package com.quikapp.user.config;
+package com.quckapp.user.config;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -35,7 +35,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public NewTopic userEventsTopic(@Value("${app.kafka.topics.user-events:quikapp.users.events}") String topic) {
+    public NewTopic userEventsTopic(@Value("${app.kafka.topics.user-events:quckapp.users.events}") String topic) {
         return TopicBuilder.name(topic).partitions(6).replicas(1).build();
     }
 }

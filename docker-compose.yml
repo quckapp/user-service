@@ -3,16 +3,16 @@ version: '3.8'
 services:
   user-service:
     build: .
-    container_name: quikapp-user-service
+    container_name: quckapp-user-service
     ports:
       - "8082:8082"
     environment:
       - SERVER_PORT=8082
       - DB_HOST=mysql
       - DB_PORT=3306
-      - DB_NAME=quikapp_users
-      - DB_USERNAME=quikapp
-      - DB_PASSWORD=quikapp_secret
+      - DB_NAME=quckapp_users
+      - DB_USERNAME=quckapp
+      - DB_PASSWORD=quckapp_secret
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
@@ -22,23 +22,23 @@ services:
       redis:
         condition: service_healthy
     networks:
-      - quikapp-network
+      - quckapp-network
     restart: unless-stopped
 
   mysql:
     image: mysql:8.0
-    container_name: quikapp-user-mysql
+    container_name: quckapp-user-mysql
     ports:
       - "3307:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=root_secret
-      - MYSQL_DATABASE=quikapp_users
-      - MYSQL_USER=quikapp
-      - MYSQL_PASSWORD=quikapp_secret
+      - MYSQL_DATABASE=quckapp_users
+      - MYSQL_USER=quckapp
+      - MYSQL_PASSWORD=quckapp_secret
     volumes:
       - user_mysql_data:/var/lib/mysql
     networks:
-      - quikapp-network
+      - quckapp-network
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
@@ -47,11 +47,11 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: quikapp-user-redis
+    container_name: quckapp-user-redis
     ports:
       - "6380:6379"
     networks:
-      - quikapp-network
+      - quckapp-network
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -60,7 +60,7 @@ services:
 
   kafka:
     image: confluentinc/cp-kafka:7.5.0
-    container_name: quikapp-user-kafka
+    container_name: quckapp-user-kafka
     ports:
       - "9093:9092"
     environment:
@@ -74,10 +74,10 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
     networks:
-      - quikapp-network
+      - quckapp-network
 
 networks:
-  quikapp-network:
+  quckapp-network:
     driver: bridge
 
 volumes:

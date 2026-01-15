@@ -1,4 +1,4 @@
--- QuikApp User Service - Initial Schema
+-- QuckApp User Service - Initial Schema
 
 CREATE TABLE users (
     id CHAR(36) PRIMARY KEY,

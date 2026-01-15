@@ -1,6 +1,6 @@
-package com.quikapp.user.domain.repository;
+package com.quckapp.user.domain.repository;
 
-import com.quikapp.user.domain.entity.UserProfile;
+import com.quckapp.user.domain.entity.UserProfile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

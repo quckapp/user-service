@@ -1,7 +1,7 @@
-package com.quikapp.user.controller;
+package com.quckapp.user.controller;
 
-import com.quikapp.user.dto.UserDtos.*;
-import com.quikapp.user.service.UserService;
+import com.quckapp.user.dto.UserDtos.*;
+import com.quckapp.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -71,7 +71,7 @@ public class UserController {
             @RequestParam String query, @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
         SearchUsersRequest request = SearchUsersRequest.builder().query(query)
-            .status(status != null ? com.quikapp.user.domain.entity.User.UserStatus.valueOf(status.toUpperCase()) : null)
+            .status(status != null ? com.quckapp.user.domain.entity.User.UserStatus.valueOf(status.toUpperCase()) : null)
             .page(page).size(size).build();
         return ResponseEntity.ok(ApiResponse.success(userService.searchUsers(request)));
     }

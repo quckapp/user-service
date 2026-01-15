@@ -1,13 +1,13 @@
-package com.quikapp.user.service;
+package com.quckapp.user.service;
 
-import com.quikapp.user.domain.entity.User;
-import com.quikapp.user.domain.entity.User.UserStatus;
-import com.quikapp.user.domain.entity.UserPreferences;
-import com.quikapp.user.domain.entity.UserProfile;
-import com.quikapp.user.domain.repository.*;
-import com.quikapp.user.dto.UserDtos.*;
-import com.quikapp.user.exception.*;
-import com.quikapp.user.kafka.UserEventPublisher;
+import com.quckapp.user.domain.entity.User;
+import com.quckapp.user.domain.entity.User.UserStatus;
+import com.quckapp.user.domain.entity.UserPreferences;
+import com.quckapp.user.domain.entity.UserProfile;
+import com.quckapp.user.domain.repository.*;
+import com.quckapp.user.dto.UserDtos.*;
+import com.quckapp.user.exception.*;
+import com.quckapp.user.kafka.UserEventPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
