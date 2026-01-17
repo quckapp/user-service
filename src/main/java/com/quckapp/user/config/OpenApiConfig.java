@@ -76,9 +76,8 @@ import org.springframework.context.annotation.Configuration;
         name = "apiKey",
         type = SecuritySchemeType.APIKEY,
         in = SecuritySchemeIn.HEADER,
-        parameterName = "X-API-Key",
         description = """
-            API Key authentication for internal services.
+            API Key authentication for internal services (X-API-Key header).
 
             Used for service-to-service communication within the QuckApp ecosystem.
             Include the key in the X-API-Key header:
@@ -89,9 +88,8 @@ import org.springframework.context.annotation.Configuration;
         name = "serviceAuth",
         type = SecuritySchemeType.APIKEY,
         in = SecuritySchemeIn.HEADER,
-        parameterName = "X-Service-Name",
         description = """
-            Service mesh authentication.
+            Service mesh authentication (X-Service-Name header).
 
             Internal services identify themselves via X-Service-Name header.
             This is typically injected by the service mesh (e.g., Istio, Consul Connect).
