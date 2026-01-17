@@ -1,15 +1,13 @@
 package com.quckapp.user.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
-import io.swagger.v3.oas.annotations.security.SecuritySchemes;
 import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -71,32 +69,53 @@ import org.springframework.context.annotation.Configuration;
         @Tag(name = "Admin", description = "Administrative operations - suspend, deactivate users")
     }
 )
-@SecuritySchemes({
-    @SecurityScheme(
-        name = "apiKey",
-        type = SecuritySchemeType.APIKEY,
-        in = SecuritySchemeIn.HEADER,
-        description = """
-            API Key authentication for internal services (X-API-Key header).
-
-            Used for service-to-service communication within the QuckApp ecosystem.
-            Include the key in the X-API-Key header:
-            `X-API-Key: <your-api-key>`
-            """
-    ),
-    @SecurityScheme(
-        name = "serviceAuth",
-        type = SecuritySchemeType.APIKEY,
-        in = SecuritySchemeIn.HEADER,
-        description = """
-            Service mesh authentication (X-Service-Name header).
-
-            Internal services identify themselves via X-Service-Name header.
-            This is typically injected by the service mesh (e.g., Istio, Consul Connect).
-            """
-    )
-})
+// Security schemes are configured programmatically in customOpenAPI() bean
 public class OpenApiConfig {
+
+    /**
+     * Configure security schemes programmatically.
+     * This ensures the Authorize button appears in Swagger UI.
+     */
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+            .components(new Components()
+                .addSecuritySchemes("bearerAuth",
+                    new io.swagger.v3.oas.models.security.SecurityScheme()
+                        .type(io.swagger.v3.oas.models.security.SecurityScheme.Type.HTTP)
+                        .scheme("bearer")
+                        .bearerFormat("JWT")
+                        .description("""
+                            JWT Bearer token authentication.
+
+                            Obtain a token from the Auth Service by calling `/v1/login`.
+                            Include the token in the Authorization header:
+                            `Authorization: Bearer <token>`
+                            """))
+                .addSecuritySchemes("apiKey",
+                    new io.swagger.v3.oas.models.security.SecurityScheme()
+                        .type(io.swagger.v3.oas.models.security.SecurityScheme.Type.APIKEY)
+                        .in(io.swagger.v3.oas.models.security.SecurityScheme.In.HEADER)
+                        .name("X-API-Key")
+                        .description("""
+                            API Key authentication for internal services.
+
+                            Used for service-to-service communication within the QuckApp ecosystem.
+                            Include the key in the X-API-Key header:
+                            `X-API-Key: <your-api-key>`
+                            """))
+                .addSecuritySchemes("serviceAuth",
+                    new io.swagger.v3.oas.models.security.SecurityScheme()
+                        .type(io.swagger.v3.oas.models.security.SecurityScheme.Type.APIKEY)
+                        .in(io.swagger.v3.oas.models.security.SecurityScheme.In.HEADER)
+                        .name("X-Service-Name")
+                        .description("""
+                            Service mesh authentication.
+
+                            Internal services identify themselves via X-Service-Name header.
+                            This is typically injected by the service mesh (e.g., Istio, Consul Connect).
+                            """)));
+    }
 
     /**
      * User CRUD operations
