@@ -77,7 +77,7 @@ class UserServiceTest {
                 .build();
 
         testProfile = UserProfile.builder()
-                .id(UUID.randomUUID())
+                .userId(testUserId)
                 .user(testUser)
                 .title("Engineer")
                 .department("Engineering")
@@ -86,7 +86,7 @@ class UserServiceTest {
                 .build();
 
         testPreferences = UserPreferences.builder()
-                .id(UUID.randomUUID())
+                .userId(testUserId)
                 .user(testUser)
                 .pushEnabled(true)
                 .emailEnabled(true)
@@ -148,8 +148,8 @@ class UserServiceTest {
                     .username("TESTUSER")
                     .build();
 
-            when(userRepository.existsByEmail("test@example.com")).thenReturn(false);
-            when(userRepository.existsByUsername("testuser")).thenReturn(false);
+            when(userRepository.existsByEmail(anyString())).thenReturn(false);
+            when(userRepository.existsByUsername(anyString())).thenReturn(false);
             when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
                 User user = invocation.getArgument(0);
                 user.setId(UUID.randomUUID());
@@ -688,9 +688,11 @@ class UserServiceTest {
             when(userRepository.findByIdWithPreferences(testUserId)).thenReturn(Optional.of(testUser));
             when(preferencesRepository.save(any(UserPreferences.class))).thenReturn(testPreferences);
 
-            PreferencesResponse result = userService.getPreferences(testUserId);
+            PreferencesResponse result = userService.updatePreferences(testUserId, request);
 
             assertThat(result).isNotNull();
+            verify(preferencesRepository).save(testPreferences);
+            verify(eventPublisher).publishPreferencesUpdated(eq(testUserId), eq(testPreferences));
         }
 
         @Test
