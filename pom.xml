@@ -23,7 +23,7 @@
         <springdoc.version>2.3.0</springdoc.version>
         <!-- Mockito/ByteBuddy versions for Java 21+ compatibility -->
         <mockito.version>5.15.2</mockito.version>
-        <byte-buddy.version>1.14.11</byte-buddy.version>
+        <byte-buddy.version>1.17.5</byte-buddy.version>
         <testcontainers.version>1.19.3</testcontainers.version>
     </properties>
 
@@ -163,6 +163,7 @@
                 <version>3.5.2</version>
                 <configuration>
                     <argLine>
+                        -javaagent:${net.bytebuddy:byte-buddy-agent:jar}
                         --add-opens java.base/java.lang=ALL-UNNAMED
                         --add-opens java.base/java.lang.reflect=ALL-UNNAMED
                         --add-opens java.base/java.util=ALL-UNNAMED
