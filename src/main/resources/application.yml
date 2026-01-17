@@ -52,5 +52,23 @@ logging:
 springdoc:
   api-docs:
     path: /api-docs
+    enabled: true
   swagger-ui:
     path: /swagger-ui.html
+    enabled: true
+    operationsSorter: method
+    tagsSorter: alpha
+    displayRequestDuration: true
+    filter: true
+    showExtensions: true
+    showCommonExtensions: true
+    docExpansion: none
+    defaultModelsExpandDepth: 1
+    defaultModelExpandDepth: 2
+    persistAuthorization: true
+    tryItOutEnabled: true
+  show-actuator: false
+  packages-to-scan: com.quckapp.user.controller
+  paths-to-match: /api/**
+  default-produces-media-type: application/json
+  default-consumes-media-type: application/json
