@@ -40,7 +40,8 @@ spring:
 # JWT Configuration - Same secret as auth-service
 jwt:
   secret: bG9jYWwtZGV2LXNlY3JldC1rZXktZm9yLXRlc3Rpbmctb25seS0zMi1jaGFycw==
-  issuer: quckapp-auth-local
+  # Must match auth-service issuer for token validation
+  issuer: quckchat_realtime
 
 # Logging - Verbose for debugging
 logging:
