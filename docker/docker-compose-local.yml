@@ -1,0 +1,104 @@
+# =============================================================================
+# LOCAL (Mock) Environment - Docker Compose
+# =============================================================================
+# Ports: MySQL 3307, Redis 6380, Kafka 29093, Zookeeper 2182
+# Usage: docker-compose -f docker/docker-compose-local.yml up -d
+# =============================================================================
+
+version: '3.8'
+
+services:
+  # MySQL Database
+  user-mysql-local:
+    image: mysql:8.0
+    container_name: user-mysql-local
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root_secret
+      MYSQL_DATABASE: quckapp_users
+      MYSQL_USER: quckapp
+      MYSQL_PASSWORD: quckapp_secret
+    volumes:
+      - user_mysql_local_data:/var/lib/mysql
+    networks:
+      - user-local-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_secret"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+  # Redis
+  user-redis-local:
+    image: redis:7-alpine
+    container_name: user-redis-local
+    ports:
+      - "6380:6379"
+    command: redis-server --appendonly yes --requirepass redis_secret
+    volumes:
+      - user_redis_local_data:/data
+    networks:
+      - user-local-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "redis_secret", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Zookeeper
+  user-zookeeper-local:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: user-zookeeper-local
+    ports:
+      - "2182:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - user_zookeeper_local_data:/var/lib/zookeeper/data
+    networks:
+      - user-local-network
+    healthcheck:
+      test: echo srvr | nc localhost 2181 || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Kafka
+  user-kafka-local:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: user-kafka-local
+    ports:
+      - "9093:9092"
+      - "29093:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: user-zookeeper-local:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://user-kafka-local:9092,PLAINTEXT_HOST://localhost:29093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+    volumes:
+      - user_kafka_local_data:/var/lib/kafka/data
+    depends_on:
+      user-zookeeper-local:
+        condition: service_healthy
+    networks:
+      - user-local-network
+    healthcheck:
+      test: kafka-topics --bootstrap-server localhost:9092 --list || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  user_mysql_local_data:
+  user_redis_local_data:
+  user_zookeeper_local_data:
+  user_kafka_local_data:
+
+networks:
+  user-local-network:
+    driver: bridge

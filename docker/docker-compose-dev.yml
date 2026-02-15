@@ -1,0 +1,101 @@
+# =============================================================================
+# DEV Environment - Docker Compose
+# =============================================================================
+# Infrastructure for development environment
+# Usage: docker-compose -f docker/docker-compose-dev.yml up -d
+# =============================================================================
+
+version: '3.8'
+
+services:
+  # MySQL Database
+  user-mysql-dev:
+    image: mysql:8.0
+    container_name: user-mysql-dev
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-dev_secret}
+      MYSQL_DATABASE: quckapp_users
+      MYSQL_USER: quckapp
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-dev_secret}
+    volumes:
+      - user_mysql_dev_data:/var/lib/mysql
+    networks:
+      - user-dev-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+  # Redis
+  user-redis-dev:
+    image: redis:7-alpine
+    container_name: user-redis-dev
+    ports:
+      - "6380:6379"
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redis_dev_secret}
+    volumes:
+      - user_redis_dev_data:/data
+    networks:
+      - user-dev-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-redis_dev_secret}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Zookeeper
+  user-zookeeper-dev:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: user-zookeeper-dev
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - user_zookeeper_dev_data:/var/lib/zookeeper/data
+    networks:
+      - user-dev-network
+    healthcheck:
+      test: echo srvr | nc localhost 2181 || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Kafka
+  user-kafka-dev:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: user-kafka-dev
+    ports:
+      - "29093:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: user-zookeeper-dev:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://user-kafka-dev:9092,PLAINTEXT_HOST://localhost:29093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+    volumes:
+      - user_kafka_dev_data:/var/lib/kafka/data
+    depends_on:
+      user-zookeeper-dev:
+        condition: service_healthy
+    networks:
+      - user-dev-network
+    healthcheck:
+      test: kafka-topics --bootstrap-server localhost:9092 --list || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  user_mysql_dev_data:
+  user_redis_dev_data:
+  user_zookeeper_dev_data:
+  user_kafka_dev_data:
+
+networks:
+  user-dev-network:
+    driver: bridge

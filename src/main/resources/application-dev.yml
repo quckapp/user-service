@@ -1,0 +1,42 @@
+# =============================================================================
+# DEV Environment Configuration
+# =============================================================================
+# Use this profile for development environment
+# Run with: -Dspring.profiles.active=dev
+# =============================================================================
+
+server:
+  port: 8082
+
+spring:
+  # MySQL Database
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3307}/${DB_NAME:quckapp_users}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${DB_USERNAME:quckapp}
+    password: ${DB_PASSWORD:dev_secret}
+    hikari:
+      maximum-pool-size: 15
+      minimum-idle: 5
+
+  # Redis
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6380}
+      password: ${REDIS_PASSWORD:redis_dev_secret}
+
+  # Kafka
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29093}
+
+  # Flyway
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+
+# Logging
+logging:
+  level:
+    com.quckapp.user: DEBUG
+    org.springframework.security: INFO
+    org.hibernate.SQL: DEBUG

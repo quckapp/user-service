@@ -1,0 +1,42 @@
+# =============================================================================
+# UAT1 Environment Configuration
+# =============================================================================
+# Use this profile for UAT1 environment
+# Run with: -Dspring.profiles.active=uat1
+# =============================================================================
+
+server:
+  port: 8082
+
+spring:
+  # MySQL Database
+  datasource:
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT:3306}/${DB_NAME:quckapp_users}?useSSL=true&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+
+  # Redis
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD}
+
+  # Kafka
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+
+  # Flyway
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+
+# Logging
+logging:
+  level:
+    com.quckapp.user: INFO
+    org.springframework.security: INFO
+    org.hibernate.SQL: WARN

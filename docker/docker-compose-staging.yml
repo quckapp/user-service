@@ -1,0 +1,109 @@
+# =============================================================================
+# STAGING Environment - Docker Compose
+# =============================================================================
+# Infrastructure for staging environment
+# Usage: docker-compose -f docker/docker-compose-staging.yml up -d
+# =============================================================================
+
+version: '3.8'
+
+services:
+  # MySQL Database
+  user-mysql-staging:
+    image: mysql:8.0
+    container_name: user-mysql-staging
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: quckapp_users
+      MYSQL_USER: quckapp
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - user_mysql_staging_data:/var/lib/mysql
+    networks:
+      - user-staging-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+
+  # Redis
+  user-redis-staging:
+    image: redis:7-alpine
+    container_name: user-redis-staging
+    ports:
+      - "6380:6379"
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - user_redis_staging_data:/data
+    networks:
+      - user-staging-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  # Zookeeper
+  user-zookeeper-staging:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: user-zookeeper-staging
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - user_zookeeper_staging_data:/var/lib/zookeeper/data
+    networks:
+      - user-staging-network
+    healthcheck:
+      test: echo srvr | nc localhost 2181 || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Kafka
+  user-kafka-staging:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: user-kafka-staging
+    ports:
+      - "29093:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: user-zookeeper-staging:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://user-kafka-staging:9092,PLAINTEXT_HOST://localhost:29093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+    volumes:
+      - user_kafka_staging_data:/var/lib/kafka/data
+    depends_on:
+      user-zookeeper-staging:
+        condition: service_healthy
+    networks:
+      - user-staging-network
+    healthcheck:
+      test: kafka-topics --bootstrap-server localhost:9092 --list || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  user_mysql_staging_data:
+  user_redis_staging_data:
+  user_zookeeper_staging_data:
+  user_kafka_staging_data:
+
+networks:
+  user-staging-network:
+    driver: bridge
