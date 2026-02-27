@@ -30,6 +30,10 @@ spring:
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
 
+promotion:
+  service-name: user-service
+  environment: ${ENVIRONMENT:local}
+
 app:
   kafka:
     topics:
